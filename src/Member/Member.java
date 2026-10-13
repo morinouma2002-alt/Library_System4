@@ -19,6 +19,8 @@ public abstract class Member {
 
 	// ★★★借りた本（先生も生徒も共通）
 	private List<Book> bookList = new ArrayList<>();
+	
+	private MemberStatus status =MemberStatus.NORMAL;
 
 	public Member(String name, int id, Scanner sc, Library library) {
 		this.name = name;
@@ -47,6 +49,12 @@ public abstract class Member {
 
 	//borrow()は共通のふるまい
 	public void borrow() {
+		
+		updateStatus();
+		if(status==MemberStatus.OVERDUE) {
+			System.out.println("延滞中の本があるので借りられない");
+			return;
+		}
 
 		//テンプレートメソッドパターン
 		if (bookList.size() >= getMaxBooks()) {
@@ -84,7 +92,9 @@ public abstract class Member {
 				}
 
 				System.out.println(book.getName() + "を借りました");
-				book.setBorrowed();
+				
+				book.setBorrowed(library.getToday());
+				
 				bookList.add(book);//本を貯める
 				System.out.println(book.getDueDate() + "を借りました");
 
@@ -133,7 +143,7 @@ public abstract class Member {
 		
 		System.out.println(returnBook.getName()+"を返却します");
 		
-		LocalDate today = LocalDate.now();                          // 今日
+		LocalDate today = library.getToday();                          // 今日
 		if (returnBook.getDueDate().isBefore(today)) {              // 期限が今日より前＝延滞
 		    long late = ChronoUnit.DAYS.between(returnBook.getDueDate(), today);   // 何日遅れか
 		    System.out.println(late + "日遅れています");
@@ -143,6 +153,25 @@ public abstract class Member {
 		
 		//抽象メソッドにしなくても、返却はただ減らすだけなので、removeする
 		bookList.remove(returnBook);
+		
+		//延滞客で、本を全部返したら通常客に戻る
+		if(status==MemberStatus.OVERDUE&&bookList.isEmpty()) {
+			status=MemberStatus.NORMAL;
+			System.out.println("通常客にもどれました");
+		}
+	}
+	
+	//借りている本を１冊ずつ見て、期限切れが一冊でもあれば延滞客にする
+	public void updateStatus() {
+		status =MemberStatus.NORMAL;
+		
+		for(Book book:bookList) {
+			
+			//期限が今日より前の本が一冊でもあれば延滞客
+			if(book.getDueDate().isBefore(library.getToday())) {
+				status =MemberStatus.OVERDUE;
+			}
+		}
 	}
 	
 	public void search() {

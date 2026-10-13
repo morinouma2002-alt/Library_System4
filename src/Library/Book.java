@@ -53,12 +53,11 @@ public class Book {
 		return dueDate; //期限を取り出す
 	}
 	
-
-	public void setBorrowed() {
-		borrowed = true;
-		dueDate=LocalDate.now();//今日の日付を入れる
-		dueDate =dueDate.plusDays(14);//借りた日の14日後
+	public void setBorrowed(LocalDate today) {
+	    borrowed = true;
+	    dueDate = today.plusDays(14);
 	}
+	
 	
 
 	public void setReturn() {

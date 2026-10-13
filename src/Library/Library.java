@@ -1,5 +1,6 @@
 package Library;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +10,8 @@ public class Library {
 
 	//has-aの関係
 	private List<Book> bookList = new ArrayList<>();
+	
+	private LocalDate today=LocalDate.now();
 
 	//libraryがmemberを管理しているのは、違和感ある
 	//private List<Member> memberList = new ArrayList<>();
@@ -31,7 +34,16 @@ public class Library {
 		bookList.add(new Book("遠い夏", "山本", 114));
 
 	}
-
+	
+	public LocalDate getToday() {
+		return today;
+	}
+	
+	public void nextDay() {
+		today=today.plusDays(1);
+		System.out.println("日付が進みました"+today);
+	}
+	
 	public List<Book> getBookList() {
 		return Collections.unmodifiableList(bookList);
 	}

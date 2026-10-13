@@ -28,6 +28,9 @@ public class SystemMain {
 
 		//次は、どうやって　一日を動かすかをかんがえる
 		while (found) {
+			
+			System.out.println("今日は"+library.getToday()+"です");
+			
 			while (true) {
 				System.out.println("あなたは、生徒か先生ですか\n"
 						+ "1,先生\n"
@@ -57,6 +60,7 @@ public class SystemMain {
 						2,返却
 						3,検索
 						4,退館
+						5,現在の状態を確認する
 						-1,システム終了
 						""";
 				System.out.println(textBlock);
@@ -69,7 +73,12 @@ public class SystemMain {
 
 				case 4 -> {
 					System.out.println("利用ありがとうございました");
+					library.nextDay();
 					break loginLoop;
+				}
+				
+				case 5 -> {
+					
 				}
 
 				case -1 -> {
